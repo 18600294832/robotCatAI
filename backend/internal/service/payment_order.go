@@ -490,7 +490,7 @@ func (s *PaymentService) buildPaymentSubject(plan *dbent.SubscriptionPlan, limit
 		if plan.ProductName != "" {
 			return plan.ProductName
 		}
-		return "Sub2API Subscription " + plan.Name
+		return "RobotCatAI Subscription " + plan.Name
 	}
 	amountStr := strconv.FormatFloat(limitAmount, 'f', 2, 64)
 	pf := strings.TrimSpace(cfg.ProductNamePrefix)
@@ -498,7 +498,7 @@ func (s *PaymentService) buildPaymentSubject(plan *dbent.SubscriptionPlan, limit
 	if pf != "" || sf != "" {
 		return strings.TrimSpace(pf + " " + amountStr + " " + sf)
 	}
-	return "Sub2API " + amountStr + " CNY"
+	return "RobotCatAI " + amountStr + " CNY"
 }
 
 func (s *PaymentService) maybeBuildWeChatOAuthRequiredResponse(ctx context.Context, req CreateOrderRequest, amount, payAmount, feeRate float64) (*CreateOrderResponse, error) {

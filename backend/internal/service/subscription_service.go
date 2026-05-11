@@ -146,6 +146,7 @@ func (s *SubscriptionService) InvalidateSubCache(userID, groupID int64) {
 type AssignSubscriptionInput struct {
 	UserID       int64
 	GroupID      int64
+	PlanID       *int64
 	ValidityDays int
 	AssignedBy   int64
 	Notes        string
@@ -230,6 +231,14 @@ func (s *SubscriptionService) AssignOrExtendSubscription(ctx context.Context, in
 			}
 		}
 
+		// 更新 plan_id（续费时更新为当前购买的套餐）
+		if input.PlanID != nil {
+			if err := s.userSubRepo.UpdatePlanID(txCtx, existingSub.ID, input.PlanID); err != nil {
+				_ = tx.Rollback()
+				return nil, false, fmt.Errorf("update subscription plan_id: %w", err)
+			}
+		}
+
 		// 追加备注
 		if input.Notes != "" {
 			newNotes := existingSub.Notes
@@ -303,6 +312,7 @@ func (s *SubscriptionService) createSubscription(ctx context.Context, input *Ass
 	sub := &UserSubscription{
 		UserID:     input.UserID,
 		GroupID:    input.GroupID,
+		PlanID:     input.PlanID,
 		StartsAt:   now,
 		ExpiresAt:  expiresAt,
 		Status:     SubscriptionStatusActive,

@@ -14,13 +14,15 @@ import (
 type PaymentHandler struct {
 	paymentService *service.PaymentService
 	configService  *service.PaymentConfigService
+	userSubRepo    service.UserSubscriptionRepository
 }
 
 // NewPaymentHandler creates a new admin PaymentHandler.
-func NewPaymentHandler(paymentService *service.PaymentService, configService *service.PaymentConfigService) *PaymentHandler {
+func NewPaymentHandler(paymentService *service.PaymentService, configService *service.PaymentConfigService, userSubRepo service.UserSubscriptionRepository) *PaymentHandler {
 	return &PaymentHandler{
 		paymentService: paymentService,
 		configService:  configService,
+		userSubRepo:    userSubRepo,
 	}
 }
 
@@ -185,7 +187,30 @@ func (h *PaymentHandler) ListPlans(c *gin.Context) {
 		response.ErrorFrom(c, err)
 		return
 	}
-	response.Success(c, plans)
+	// Enrich plans with headcount stats
+	type planWithStats struct {
+		*dbent.SubscriptionPlan
+		HeadcountUsed      int64  `json:"headcount_used"`
+		HeadcountRemaining *int64 `json:"headcount_remaining"`
+	}
+	result := make([]planWithStats, 0, len(plans))
+	for _, p := range plans {
+		used, _ := h.userSubRepo.CountActiveByPlanID(c.Request.Context(), int64(p.ID))
+		var remaining *int64
+		if p.HeadcountLimit > 0 {
+			r := int64(p.HeadcountLimit) - used
+			if r < 0 {
+				r = 0
+			}
+			remaining = &r
+		}
+		result = append(result, planWithStats{
+			SubscriptionPlan:   p,
+			HeadcountUsed:      used,
+			HeadcountRemaining: remaining,
+		})
+	}
+	response.Success(c, result)
 }
 
 // CreatePlan creates a new subscription plan.

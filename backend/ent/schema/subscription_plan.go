@@ -58,6 +58,9 @@ func (SubscriptionPlan) Fields() []ent.Field {
 			Default(true),
 		field.Int("sort_order").
 			Default(0),
+		field.Int("headcount_limit").
+			Default(0).
+			Comment("Maximum number of active subscriptions allowed for this plan (0 = unlimited)"),
 		field.Time("created_at").
 			Immutable().
 			Default(time.Now).

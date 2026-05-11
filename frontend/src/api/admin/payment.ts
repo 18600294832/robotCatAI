@@ -132,9 +132,15 @@ export const adminPaymentAPI = {
 
   // ==================== Subscription Plans ====================
 
+  /** Admin plan with headcount statistics */
+  export interface AdminSubscriptionPlan extends SubscriptionPlan {
+    headcount_used: number
+    headcount_remaining: number | null
+  }
+
   /** Get all subscription plans */
   getPlans() {
-    return apiClient.get<SubscriptionPlan[]>('/admin/payment/plans')
+    return apiClient.get<AdminSubscriptionPlan[]>('/admin/payment/plans')
   },
 
   /** Create a subscription plan */

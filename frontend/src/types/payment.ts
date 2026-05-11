@@ -117,6 +117,9 @@ export interface SubscriptionPlan {
   features: string[]
   for_sale: boolean
   sort_order: number
+  headcount_limit: number
+  headcount_used: number
+  headcount_remaining: number | null
 }
 
 export interface PaymentChannel {

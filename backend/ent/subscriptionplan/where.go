@@ -109,6 +109,11 @@ func SortOrder(v int) predicate.SubscriptionPlan {
 	return predicate.SubscriptionPlan(sql.FieldEQ(FieldSortOrder, v))
 }
 
+// HeadcountLimit applies equality check predicate on the "headcount_limit" field. It's identical to HeadcountLimitEQ.
+func HeadcountLimit(v int) predicate.SubscriptionPlan {
+	return predicate.SubscriptionPlan(sql.FieldEQ(FieldHeadcountLimit, v))
+}
+
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.SubscriptionPlan {
 	return predicate.SubscriptionPlan(sql.FieldEQ(FieldCreatedAt, v))
@@ -662,6 +667,46 @@ func SortOrderLT(v int) predicate.SubscriptionPlan {
 // SortOrderLTE applies the LTE predicate on the "sort_order" field.
 func SortOrderLTE(v int) predicate.SubscriptionPlan {
 	return predicate.SubscriptionPlan(sql.FieldLTE(FieldSortOrder, v))
+}
+
+// HeadcountLimitEQ applies the EQ predicate on the "headcount_limit" field.
+func HeadcountLimitEQ(v int) predicate.SubscriptionPlan {
+	return predicate.SubscriptionPlan(sql.FieldEQ(FieldHeadcountLimit, v))
+}
+
+// HeadcountLimitNEQ applies the NEQ predicate on the "headcount_limit" field.
+func HeadcountLimitNEQ(v int) predicate.SubscriptionPlan {
+	return predicate.SubscriptionPlan(sql.FieldNEQ(FieldHeadcountLimit, v))
+}
+
+// HeadcountLimitIn applies the In predicate on the "headcount_limit" field.
+func HeadcountLimitIn(vs ...int) predicate.SubscriptionPlan {
+	return predicate.SubscriptionPlan(sql.FieldIn(FieldHeadcountLimit, vs...))
+}
+
+// HeadcountLimitNotIn applies the NotIn predicate on the "headcount_limit" field.
+func HeadcountLimitNotIn(vs ...int) predicate.SubscriptionPlan {
+	return predicate.SubscriptionPlan(sql.FieldNotIn(FieldHeadcountLimit, vs...))
+}
+
+// HeadcountLimitGT applies the GT predicate on the "headcount_limit" field.
+func HeadcountLimitGT(v int) predicate.SubscriptionPlan {
+	return predicate.SubscriptionPlan(sql.FieldGT(FieldHeadcountLimit, v))
+}
+
+// HeadcountLimitGTE applies the GTE predicate on the "headcount_limit" field.
+func HeadcountLimitGTE(v int) predicate.SubscriptionPlan {
+	return predicate.SubscriptionPlan(sql.FieldGTE(FieldHeadcountLimit, v))
+}
+
+// HeadcountLimitLT applies the LT predicate on the "headcount_limit" field.
+func HeadcountLimitLT(v int) predicate.SubscriptionPlan {
+	return predicate.SubscriptionPlan(sql.FieldLT(FieldHeadcountLimit, v))
+}
+
+// HeadcountLimitLTE applies the LTE predicate on the "headcount_limit" field.
+func HeadcountLimitLTE(v int) predicate.SubscriptionPlan {
+	return predicate.SubscriptionPlan(sql.FieldLTE(FieldHeadcountLimit, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.

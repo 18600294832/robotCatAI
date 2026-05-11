@@ -35,6 +35,8 @@ const (
 	FieldForSale = "for_sale"
 	// FieldSortOrder holds the string denoting the sort_order field in the database.
 	FieldSortOrder = "sort_order"
+	// FieldHeadcountLimit holds the string denoting the headcount_limit field in the database.
+	FieldHeadcountLimit = "headcount_limit"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -57,6 +59,7 @@ var Columns = []string{
 	FieldProductName,
 	FieldForSale,
 	FieldSortOrder,
+	FieldHeadcountLimit,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 }
@@ -92,6 +95,8 @@ var (
 	DefaultForSale bool
 	// DefaultSortOrder holds the default value on creation for the "sort_order" field.
 	DefaultSortOrder int
+	// DefaultHeadcountLimit holds the default value on creation for the "headcount_limit" field.
+	DefaultHeadcountLimit int
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
@@ -161,6 +166,11 @@ func ByForSale(opts ...sql.OrderTermOption) OrderOption {
 // BySortOrder orders the results by the sort_order field.
 func BySortOrder(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSortOrder, opts...).ToFunc()
+}
+
+// ByHeadcountLimit orders the results by the headcount_limit field.
+func ByHeadcountLimit(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldHeadcountLimit, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.

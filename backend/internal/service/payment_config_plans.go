@@ -124,11 +124,15 @@ func (s *PaymentConfigService) CreatePlan(ctx context.Context, req CreatePlanReq
 	if err := validatePlanRequired(req.Name, req.GroupID, req.Price, req.ValidityDays, req.ValidityUnit, req.OriginalPrice); err != nil {
 		return nil, err
 	}
+	if req.HeadcountLimit < 0 {
+		return nil, infraerrors.BadRequest("INVALID_HEADCOUNT_LIMIT", "headcount_limit must be >= 0")
+	}
 	b := s.entClient.SubscriptionPlan.Create().
 		SetGroupID(req.GroupID).SetName(req.Name).SetDescription(req.Description).
 		SetPrice(req.Price).SetValidityDays(req.ValidityDays).SetValidityUnit(req.ValidityUnit).
 		SetFeatures(req.Features).SetProductName(req.ProductName).
-		SetForSale(req.ForSale).SetSortOrder(req.SortOrder)
+		SetForSale(req.ForSale).SetSortOrder(req.SortOrder).
+		SetHeadcountLimit(req.HeadcountLimit)
 	if req.OriginalPrice != nil {
 		b.SetOriginalPrice(*req.OriginalPrice)
 	}
@@ -175,6 +179,12 @@ func (s *PaymentConfigService) UpdatePlan(ctx context.Context, id int64, req Upd
 	}
 	if req.SortOrder != nil {
 		u.SetSortOrder(*req.SortOrder)
+	}
+	if req.HeadcountLimit != nil {
+		if *req.HeadcountLimit < 0 {
+			return nil, infraerrors.BadRequest("INVALID_HEADCOUNT_LIMIT", "headcount_limit must be >= 0")
+		}
+		u.SetHeadcountLimit(*req.HeadcountLimit)
 	}
 	return u.Save(ctx)
 }

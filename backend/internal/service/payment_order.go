@@ -119,6 +119,15 @@ func (s *PaymentService) validateSubOrder(ctx context.Context, req CreateOrderRe
 	if !group.IsSubscriptionType() {
 		return nil, infraerrors.BadRequest("GROUP_TYPE_MISMATCH", "group is not a subscription type")
 	}
+	if plan.HeadcountLimit > 0 {
+		used, err := s.userSubRepo.CountActiveByPlanID(ctx, req.PlanID)
+		if err != nil {
+			return nil, fmt.Errorf("check plan headcount: %w", err)
+		}
+		if used >= int64(plan.HeadcountLimit) {
+			return nil, infraerrors.Conflict("PLAN_SOLD_OUT", "this plan has reached its purchase limit")
+		}
+	}
 	return plan, nil
 }
 
@@ -133,6 +142,16 @@ func (s *PaymentService) createOrderInTx(ctx context.Context, req CreateOrderReq
 	}
 	if err := s.checkDailyLimit(ctx, tx, req.UserID, limitAmount, cfg.DailyLimit); err != nil {
 		return nil, err
+	}
+	if plan != nil && plan.HeadcountLimit > 0 {
+		txCtx := dbent.NewTxContext(ctx, tx)
+		used, err := s.userSubRepo.CountActiveByPlanID(txCtx, req.PlanID)
+		if err != nil {
+			return nil, fmt.Errorf("check plan headcount in tx: %w", err)
+		}
+		if used >= int64(plan.HeadcountLimit) {
+			return nil, infraerrors.Conflict("PLAN_SOLD_OUT", "this plan has reached its purchase limit")
+		}
 	}
 	tm := cfg.OrderTimeoutMin
 	if tm <= 0 {

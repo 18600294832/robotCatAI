@@ -223,6 +223,27 @@ func (_u *SubscriptionPlanUpdate) AddSortOrder(v int) *SubscriptionPlanUpdate {
 	return _u
 }
 
+// SetHeadcountLimit sets the "headcount_limit" field.
+func (_u *SubscriptionPlanUpdate) SetHeadcountLimit(v int) *SubscriptionPlanUpdate {
+	_u.mutation.ResetHeadcountLimit()
+	_u.mutation.SetHeadcountLimit(v)
+	return _u
+}
+
+// SetNillableHeadcountLimit sets the "headcount_limit" field if the given value is not nil.
+func (_u *SubscriptionPlanUpdate) SetNillableHeadcountLimit(v *int) *SubscriptionPlanUpdate {
+	if v != nil {
+		_u.SetHeadcountLimit(*v)
+	}
+	return _u
+}
+
+// AddHeadcountLimit adds value to the "headcount_limit" field.
+func (_u *SubscriptionPlanUpdate) AddHeadcountLimit(v int) *SubscriptionPlanUpdate {
+	_u.mutation.AddHeadcountLimit(v)
+	return _u
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (_u *SubscriptionPlanUpdate) SetUpdatedAt(v time.Time) *SubscriptionPlanUpdate {
 	_u.mutation.SetUpdatedAt(v)
@@ -352,6 +373,12 @@ func (_u *SubscriptionPlanUpdate) sqlSave(ctx context.Context) (_node int, err e
 	}
 	if value, ok := _u.mutation.AddedSortOrder(); ok {
 		_spec.AddField(subscriptionplan.FieldSortOrder, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.HeadcountLimit(); ok {
+		_spec.SetField(subscriptionplan.FieldHeadcountLimit, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedHeadcountLimit(); ok {
+		_spec.AddField(subscriptionplan.FieldHeadcountLimit, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(subscriptionplan.FieldUpdatedAt, field.TypeTime, value)
@@ -571,6 +598,27 @@ func (_u *SubscriptionPlanUpdateOne) AddSortOrder(v int) *SubscriptionPlanUpdate
 	return _u
 }
 
+// SetHeadcountLimit sets the "headcount_limit" field.
+func (_u *SubscriptionPlanUpdateOne) SetHeadcountLimit(v int) *SubscriptionPlanUpdateOne {
+	_u.mutation.ResetHeadcountLimit()
+	_u.mutation.SetHeadcountLimit(v)
+	return _u
+}
+
+// SetNillableHeadcountLimit sets the "headcount_limit" field if the given value is not nil.
+func (_u *SubscriptionPlanUpdateOne) SetNillableHeadcountLimit(v *int) *SubscriptionPlanUpdateOne {
+	if v != nil {
+		_u.SetHeadcountLimit(*v)
+	}
+	return _u
+}
+
+// AddHeadcountLimit adds value to the "headcount_limit" field.
+func (_u *SubscriptionPlanUpdateOne) AddHeadcountLimit(v int) *SubscriptionPlanUpdateOne {
+	_u.mutation.AddHeadcountLimit(v)
+	return _u
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (_u *SubscriptionPlanUpdateOne) SetUpdatedAt(v time.Time) *SubscriptionPlanUpdateOne {
 	_u.mutation.SetUpdatedAt(v)
@@ -730,6 +778,12 @@ func (_u *SubscriptionPlanUpdateOne) sqlSave(ctx context.Context) (_node *Subscr
 	}
 	if value, ok := _u.mutation.AddedSortOrder(); ok {
 		_spec.AddField(subscriptionplan.FieldSortOrder, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.HeadcountLimit(); ok {
+		_spec.SetField(subscriptionplan.FieldHeadcountLimit, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedHeadcountLimit(); ok {
+		_spec.AddField(subscriptionplan.FieldHeadcountLimit, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(subscriptionplan.FieldUpdatedAt, field.TypeTime, value)

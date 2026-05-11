@@ -24,6 +24,7 @@ type UserSubscriptionRepository interface {
 	ExtendExpiry(ctx context.Context, subscriptionID int64, newExpiresAt time.Time) error
 	UpdateStatus(ctx context.Context, subscriptionID int64, status string) error
 	UpdateNotes(ctx context.Context, subscriptionID int64, notes string) error
+	UpdatePlanID(ctx context.Context, subscriptionID int64, planID *int64) error
 
 	ActivateWindows(ctx context.Context, id int64, start time.Time) error
 	ResetDailyUsage(ctx context.Context, id int64, newWindowStart time.Time) error
@@ -32,4 +33,8 @@ type UserSubscriptionRepository interface {
 	IncrementUsage(ctx context.Context, id int64, costUSD float64) error
 
 	BatchUpdateExpiredStatus(ctx context.Context) (int64, error)
+
+	CountByGroupID(ctx context.Context, groupID int64) (int64, error)
+	CountActiveByGroupID(ctx context.Context, groupID int64) (int64, error)
+	CountActiveByPlanID(ctx context.Context, planID int64) (int64, error)
 }

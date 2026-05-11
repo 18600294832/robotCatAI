@@ -152,6 +152,20 @@ func (_c *SubscriptionPlanCreate) SetNillableSortOrder(v *int) *SubscriptionPlan
 	return _c
 }
 
+// SetHeadcountLimit sets the "headcount_limit" field.
+func (_c *SubscriptionPlanCreate) SetHeadcountLimit(v int) *SubscriptionPlanCreate {
+	_c.mutation.SetHeadcountLimit(v)
+	return _c
+}
+
+// SetNillableHeadcountLimit sets the "headcount_limit" field if the given value is not nil.
+func (_c *SubscriptionPlanCreate) SetNillableHeadcountLimit(v *int) *SubscriptionPlanCreate {
+	if v != nil {
+		_c.SetHeadcountLimit(*v)
+	}
+	return _c
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (_c *SubscriptionPlanCreate) SetCreatedAt(v time.Time) *SubscriptionPlanCreate {
 	_c.mutation.SetCreatedAt(v)
@@ -243,6 +257,10 @@ func (_c *SubscriptionPlanCreate) defaults() {
 		v := subscriptionplan.DefaultSortOrder
 		_c.mutation.SetSortOrder(v)
 	}
+	if _, ok := _c.mutation.HeadcountLimit(); !ok {
+		v := subscriptionplan.DefaultHeadcountLimit
+		_c.mutation.SetHeadcountLimit(v)
+	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := subscriptionplan.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
@@ -299,6 +317,9 @@ func (_c *SubscriptionPlanCreate) check() error {
 	}
 	if _, ok := _c.mutation.SortOrder(); !ok {
 		return &ValidationError{Name: "sort_order", err: errors.New(`ent: missing required field "SubscriptionPlan.sort_order"`)}
+	}
+	if _, ok := _c.mutation.HeadcountLimit(); !ok {
+		return &ValidationError{Name: "headcount_limit", err: errors.New(`ent: missing required field "SubscriptionPlan.headcount_limit"`)}
 	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "SubscriptionPlan.created_at"`)}
@@ -376,6 +397,10 @@ func (_c *SubscriptionPlanCreate) createSpec() (*SubscriptionPlan, *sqlgraph.Cre
 	if value, ok := _c.mutation.SortOrder(); ok {
 		_spec.SetField(subscriptionplan.FieldSortOrder, field.TypeInt, value)
 		_node.SortOrder = value
+	}
+	if value, ok := _c.mutation.HeadcountLimit(); ok {
+		_spec.SetField(subscriptionplan.FieldHeadcountLimit, field.TypeInt, value)
+		_node.HeadcountLimit = value
 	}
 	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(subscriptionplan.FieldCreatedAt, field.TypeTime, value)
@@ -602,6 +627,24 @@ func (u *SubscriptionPlanUpsert) UpdateSortOrder() *SubscriptionPlanUpsert {
 // AddSortOrder adds v to the "sort_order" field.
 func (u *SubscriptionPlanUpsert) AddSortOrder(v int) *SubscriptionPlanUpsert {
 	u.Add(subscriptionplan.FieldSortOrder, v)
+	return u
+}
+
+// SetHeadcountLimit sets the "headcount_limit" field.
+func (u *SubscriptionPlanUpsert) SetHeadcountLimit(v int) *SubscriptionPlanUpsert {
+	u.Set(subscriptionplan.FieldHeadcountLimit, v)
+	return u
+}
+
+// UpdateHeadcountLimit sets the "headcount_limit" field to the value that was provided on create.
+func (u *SubscriptionPlanUpsert) UpdateHeadcountLimit() *SubscriptionPlanUpsert {
+	u.SetExcluded(subscriptionplan.FieldHeadcountLimit)
+	return u
+}
+
+// AddHeadcountLimit adds v to the "headcount_limit" field.
+func (u *SubscriptionPlanUpsert) AddHeadcountLimit(v int) *SubscriptionPlanUpsert {
+	u.Add(subscriptionplan.FieldHeadcountLimit, v)
 	return u
 }
 
@@ -855,6 +898,27 @@ func (u *SubscriptionPlanUpsertOne) AddSortOrder(v int) *SubscriptionPlanUpsertO
 func (u *SubscriptionPlanUpsertOne) UpdateSortOrder() *SubscriptionPlanUpsertOne {
 	return u.Update(func(s *SubscriptionPlanUpsert) {
 		s.UpdateSortOrder()
+	})
+}
+
+// SetHeadcountLimit sets the "headcount_limit" field.
+func (u *SubscriptionPlanUpsertOne) SetHeadcountLimit(v int) *SubscriptionPlanUpsertOne {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.SetHeadcountLimit(v)
+	})
+}
+
+// AddHeadcountLimit adds v to the "headcount_limit" field.
+func (u *SubscriptionPlanUpsertOne) AddHeadcountLimit(v int) *SubscriptionPlanUpsertOne {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.AddHeadcountLimit(v)
+	})
+}
+
+// UpdateHeadcountLimit sets the "headcount_limit" field to the value that was provided on create.
+func (u *SubscriptionPlanUpsertOne) UpdateHeadcountLimit() *SubscriptionPlanUpsertOne {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.UpdateHeadcountLimit()
 	})
 }
 
@@ -1276,6 +1340,27 @@ func (u *SubscriptionPlanUpsertBulk) AddSortOrder(v int) *SubscriptionPlanUpsert
 func (u *SubscriptionPlanUpsertBulk) UpdateSortOrder() *SubscriptionPlanUpsertBulk {
 	return u.Update(func(s *SubscriptionPlanUpsert) {
 		s.UpdateSortOrder()
+	})
+}
+
+// SetHeadcountLimit sets the "headcount_limit" field.
+func (u *SubscriptionPlanUpsertBulk) SetHeadcountLimit(v int) *SubscriptionPlanUpsertBulk {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.SetHeadcountLimit(v)
+	})
+}
+
+// AddHeadcountLimit adds v to the "headcount_limit" field.
+func (u *SubscriptionPlanUpsertBulk) AddHeadcountLimit(v int) *SubscriptionPlanUpsertBulk {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.AddHeadcountLimit(v)
+	})
+}
+
+// UpdateHeadcountLimit sets the "headcount_limit" field to the value that was provided on create.
+func (u *SubscriptionPlanUpsertBulk) UpdateHeadcountLimit() *SubscriptionPlanUpsertBulk {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.UpdateHeadcountLimit()
 	})
 }
 

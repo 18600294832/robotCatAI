@@ -22,14 +22,16 @@ type PaymentHandler struct {
 	channelService *service.ChannelService
 	paymentService *service.PaymentService
 	configService  *service.PaymentConfigService
+	userSubRepo    service.UserSubscriptionRepository
 }
 
 // NewPaymentHandler creates a new PaymentHandler.
-func NewPaymentHandler(paymentService *service.PaymentService, configService *service.PaymentConfigService, channelService *service.ChannelService) *PaymentHandler {
+func NewPaymentHandler(paymentService *service.PaymentService, configService *service.PaymentConfigService, channelService *service.ChannelService, userSubRepo service.UserSubscriptionRepository) *PaymentHandler {
 	return &PaymentHandler{
 		channelService: channelService,
 		paymentService: paymentService,
 		configService:  configService,
+		userSubRepo:    userSubRepo,
 	}
 }
 
@@ -52,30 +54,43 @@ func (h *PaymentHandler) GetPlans(c *gin.Context) {
 		response.ErrorFrom(c, err)
 		return
 	}
-	// Enrich plans with group platform for frontend color coding
+	// Enrich plans with group platform and headcount stats
 	type planWithPlatform struct {
-		ID            int64    `json:"id"`
-		GroupID       int64    `json:"group_id"`
-		GroupPlatform string   `json:"group_platform"`
-		Name          string   `json:"name"`
-		Description   string   `json:"description"`
-		Price         float64  `json:"price"`
-		OriginalPrice *float64 `json:"original_price,omitempty"`
-		ValidityDays  int      `json:"validity_days"`
-		ValidityUnit  string   `json:"validity_unit"`
-		Features      string   `json:"features"`
-		ProductName   string   `json:"product_name"`
-		ForSale       bool     `json:"for_sale"`
-		SortOrder     int      `json:"sort_order"`
+		ID                 int64    `json:"id"`
+		GroupID            int64    `json:"group_id"`
+		GroupPlatform      string   `json:"group_platform"`
+		Name               string   `json:"name"`
+		Description        string   `json:"description"`
+		Price              float64  `json:"price"`
+		OriginalPrice      *float64 `json:"original_price,omitempty"`
+		ValidityDays       int      `json:"validity_days"`
+		ValidityUnit       string   `json:"validity_unit"`
+		Features           string   `json:"features"`
+		ProductName        string   `json:"product_name"`
+		ForSale            bool     `json:"for_sale"`
+		SortOrder          int      `json:"sort_order"`
+		HeadcountLimit     int      `json:"headcount_limit"`
+		HeadcountUsed      int64    `json:"headcount_used"`
+		HeadcountRemaining *int64   `json:"headcount_remaining"`
 	}
 	platformMap := h.configService.GetGroupPlatformMap(c.Request.Context(), plans)
 	result := make([]planWithPlatform, 0, len(plans))
 	for _, p := range plans {
+		used, _ := h.userSubRepo.CountActiveByPlanID(c.Request.Context(), int64(p.ID))
+		var remaining *int64
+		if p.HeadcountLimit > 0 {
+			r := int64(p.HeadcountLimit) - used
+			if r < 0 {
+				r = 0
+			}
+			remaining = &r
+		}
 		result = append(result, planWithPlatform{
 			ID: int64(p.ID), GroupID: p.GroupID, GroupPlatform: platformMap[p.GroupID],
 			Name: p.Name, Description: p.Description, Price: p.Price, OriginalPrice: p.OriginalPrice,
 			ValidityDays: p.ValidityDays, ValidityUnit: p.ValidityUnit, Features: p.Features,
 			ProductName: p.ProductName, ForSale: p.ForSale, SortOrder: p.SortOrder,
+			HeadcountLimit: p.HeadcountLimit, HeadcountUsed: used, HeadcountRemaining: remaining,
 		})
 	}
 	response.Success(c, result)
@@ -118,6 +133,15 @@ func (h *PaymentHandler) GetCheckoutInfo(c *gin.Context) {
 	planList := make([]checkoutPlan, 0, len(plans))
 	for _, p := range plans {
 		gi := groupInfo[p.GroupID]
+		used, _ := h.userSubRepo.CountActiveByPlanID(ctx, int64(p.ID))
+		var remaining *int64
+		if p.HeadcountLimit > 0 {
+			r := int64(p.HeadcountLimit) - used
+			if r < 0 {
+				r = 0
+			}
+			remaining = &r
+		}
 		planList = append(planList, checkoutPlan{
 			ID: int64(p.ID), GroupID: p.GroupID,
 			GroupPlatform: gi.Platform, GroupName: gi.Name,
@@ -126,7 +150,10 @@ func (h *PaymentHandler) GetCheckoutInfo(c *gin.Context) {
 			ModelScopes: gi.ModelScopes,
 			Name:        p.Name, Description: p.Description, Price: p.Price, OriginalPrice: p.OriginalPrice,
 			ValidityDays: p.ValidityDays, ValidityUnit: p.ValidityUnit, Features: parseFeatures(p.Features),
-			ProductName: p.ProductName,
+			ProductName:        p.ProductName,
+			HeadcountLimit:     p.HeadcountLimit,
+			HeadcountUsed:      used,
+			HeadcountRemaining: remaining,
 		})
 	}
 
@@ -158,23 +185,26 @@ type checkoutInfoResponse struct {
 }
 
 type checkoutPlan struct {
-	ID              int64    `json:"id"`
-	GroupID         int64    `json:"group_id"`
-	GroupPlatform   string   `json:"group_platform"`
-	GroupName       string   `json:"group_name"`
-	RateMultiplier  float64  `json:"rate_multiplier"`
-	DailyLimitUSD   *float64 `json:"daily_limit_usd"`
-	WeeklyLimitUSD  *float64 `json:"weekly_limit_usd"`
-	MonthlyLimitUSD *float64 `json:"monthly_limit_usd"`
-	ModelScopes     []string `json:"supported_model_scopes"`
-	Name            string   `json:"name"`
-	Description     string   `json:"description"`
-	Price           float64  `json:"price"`
-	OriginalPrice   *float64 `json:"original_price,omitempty"`
-	ValidityDays    int      `json:"validity_days"`
-	ValidityUnit    string   `json:"validity_unit"`
-	Features        []string `json:"features"`
-	ProductName     string   `json:"product_name"`
+	ID                 int64    `json:"id"`
+	GroupID            int64    `json:"group_id"`
+	GroupPlatform      string   `json:"group_platform"`
+	GroupName          string   `json:"group_name"`
+	RateMultiplier     float64  `json:"rate_multiplier"`
+	DailyLimitUSD      *float64 `json:"daily_limit_usd"`
+	WeeklyLimitUSD     *float64 `json:"weekly_limit_usd"`
+	MonthlyLimitUSD    *float64 `json:"monthly_limit_usd"`
+	ModelScopes        []string `json:"supported_model_scopes"`
+	Name               string   `json:"name"`
+	Description        string   `json:"description"`
+	Price              float64  `json:"price"`
+	OriginalPrice      *float64 `json:"original_price,omitempty"`
+	ValidityDays       int      `json:"validity_days"`
+	ValidityUnit       string   `json:"validity_unit"`
+	Features           []string `json:"features"`
+	ProductName        string   `json:"product_name"`
+	HeadcountLimit     int      `json:"headcount_limit"`
+	HeadcountUsed      int64    `json:"headcount_used"`
+	HeadcountRemaining *int64   `json:"headcount_remaining"`
 }
 
 // parseFeatures splits a newline-separated features string into a string slice.

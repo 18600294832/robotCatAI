@@ -343,14 +343,34 @@ func (s *PaymentService) doSub(ctx context.Context, o *dbent.PaymentOrder) error
 	if err != nil || g.Status != payment.EntityStatusActive {
 		return fmt.Errorf("group %d no longer exists or inactive", gid)
 	}
-	// Idempotency: check audit log to see if subscription was already assigned.
-	// Prevents double-extension on retry after markCompleted fails.
+	if o.PlanID != nil && *o.PlanID > 0 {
+		plan, err := s.configService.GetPlan(ctx, *o.PlanID)
+		if err != nil {
+			return fmt.Errorf("plan %d not found: %w", *o.PlanID, err)
+		}
+		if plan.HeadcountLimit > 0 {
+			used, err := s.userSubRepo.CountActiveByPlanID(ctx, *o.PlanID)
+			if err != nil {
+				return fmt.Errorf("check plan headcount before fulfillment: %w", err)
+			}
+			if used >= int64(plan.HeadcountLimit) {
+				return infraerrors.Conflict("PLAN_SOLD_OUT", fmt.Sprintf("plan %d has reached its purchase limit during fulfillment", *o.PlanID))
+			}
+		}
+	}
 	if s.hasAuditLog(ctx, o.ID, "SUBSCRIPTION_SUCCESS") {
 		slog.Info("subscription already assigned for order, skipping", "orderID", o.ID, "groupID", gid)
 		return s.markCompleted(ctx, o, "SUBSCRIPTION_SUCCESS")
 	}
 	orderNote := fmt.Sprintf("payment order %d", o.ID)
-	_, _, err = s.subscriptionSvc.AssignOrExtendSubscription(ctx, &AssignSubscriptionInput{UserID: o.UserID, GroupID: gid, ValidityDays: days, AssignedBy: 0, Notes: orderNote})
+	_, _, err = s.subscriptionSvc.AssignOrExtendSubscription(ctx, &AssignSubscriptionInput{
+		UserID:       o.UserID,
+		GroupID:      gid,
+		PlanID:       o.PlanID,
+		ValidityDays: days,
+		AssignedBy:   0,
+		Notes:        orderNote,
+	})
 	if err != nil {
 		return fmt.Errorf("assign subscription: %w", err)
 	}

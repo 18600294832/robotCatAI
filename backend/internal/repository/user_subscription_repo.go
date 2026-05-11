@@ -28,6 +28,7 @@ func (r *userSubscriptionRepository) Create(ctx context.Context, sub *service.Us
 	builder := client.UserSubscription.Create().
 		SetUserID(sub.UserID).
 		SetGroupID(sub.GroupID).
+		SetNillablePlanID(sub.PlanID).
 		SetExpiresAt(sub.ExpiresAt).
 		SetNillableDailyWindowStart(sub.DailyWindowStart).
 		SetNillableWeeklyWindowStart(sub.WeeklyWindowStart).
@@ -110,6 +111,7 @@ func (r *userSubscriptionRepository) Update(ctx context.Context, sub *service.Us
 	builder := client.UserSubscription.UpdateOneID(sub.ID).
 		SetUserID(sub.UserID).
 		SetGroupID(sub.GroupID).
+		SetNillablePlanID(sub.PlanID).
 		SetStartsAt(sub.StartsAt).
 		SetExpiresAt(sub.ExpiresAt).
 		SetStatus(sub.Status).
@@ -299,6 +301,14 @@ func (r *userSubscriptionRepository) UpdateNotes(ctx context.Context, subscripti
 	return translatePersistenceError(err, service.ErrSubscriptionNotFound, nil)
 }
 
+func (r *userSubscriptionRepository) UpdatePlanID(ctx context.Context, subscriptionID int64, planID *int64) error {
+	client := clientFromContext(ctx, r.client)
+	_, err := client.UserSubscription.UpdateOneID(subscriptionID).
+		SetNillablePlanID(planID).
+		Save(ctx)
+	return translatePersistenceError(err, service.ErrSubscriptionNotFound, nil)
+}
+
 func (r *userSubscriptionRepository) ActivateWindows(ctx context.Context, id int64, start time.Time) error {
 	client := clientFromContext(ctx, r.client)
 	_, err := client.UserSubscription.UpdateOneID(id).
@@ -419,6 +429,18 @@ func (r *userSubscriptionRepository) CountActiveByGroupID(ctx context.Context, g
 	return int64(count), err
 }
 
+func (r *userSubscriptionRepository) CountActiveByPlanID(ctx context.Context, planID int64) (int64, error) {
+	client := clientFromContext(ctx, r.client)
+	count, err := client.UserSubscription.Query().
+		Where(
+			usersubscription.PlanIDEQ(planID),
+			usersubscription.StatusEQ(service.SubscriptionStatusActive),
+			usersubscription.ExpiresAtGT(time.Now()),
+		).
+		Count(ctx)
+	return int64(count), err
+}
+
 func (r *userSubscriptionRepository) DeleteByGroupID(ctx context.Context, groupID int64) (int64, error) {
 	client := clientFromContext(ctx, r.client)
 	n, err := client.UserSubscription.Delete().Where(usersubscription.GroupIDEQ(groupID)).Exec(ctx)
@@ -433,6 +455,7 @@ func userSubscriptionEntityToService(m *dbent.UserSubscription) *service.UserSub
 		ID:                 m.ID,
 		UserID:             m.UserID,
 		GroupID:            m.GroupID,
+		PlanID:             m.PlanID,
 		StartsAt:           m.StartsAt,
 		ExpiresAt:          m.ExpiresAt,
 		Status:             m.Status,

@@ -80,15 +80,29 @@
         </div>
       </div>
 
+      <!-- Headcount limit display -->
+      <div v-if="plan.headcount_limit > 0" class="mb-3 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 dark:border-dark-600 dark:bg-dark-700/50">
+        <div class="flex items-center justify-between text-xs">
+          <span class="text-gray-500 dark:text-dark-400">{{ t('payment.planCard.remaining') }}</span>
+          <span v-if="plan.headcount_remaining !== null && plan.headcount_remaining > 0" class="font-semibold text-gray-700 dark:text-gray-300">
+            {{ plan.headcount_remaining }} / {{ plan.headcount_limit }}
+          </span>
+          <span v-else-if="plan.headcount_remaining === 0" class="font-semibold text-red-600 dark:text-red-400">
+            {{ t('payment.admin.soldOut') }}
+          </span>
+        </div>
+      </div>
+
       <div class="flex-1" />
 
       <!-- Subscribe Button -->
       <button
         type="button"
-        :class="['w-full rounded-xl py-2.5 text-sm font-semibold transition-all active:scale-[0.98]', btnClass]"
+        :disabled="isSoldOut"
+        :class="['w-full rounded-xl py-2.5 text-sm font-semibold transition-all active:scale-[0.98]', isSoldOut ? 'cursor-not-allowed bg-gray-300 text-gray-500 dark:bg-dark-600 dark:text-dark-400' : btnClass]"
         @click="emit('select', plan)"
       >
-        {{ isRenewal ? t('payment.renewNow') : t('payment.subscribeNow') }}
+        {{ buttonText }}
       </button>
     </div>
   </div>
@@ -118,6 +132,13 @@ const platform = computed(() => props.plan.group_platform || '')
 const isRenewal = computed(() =>
   props.activeSubscriptions?.some(s => s.group_id === props.plan.group_id && s.status === 'active') ?? false
 )
+const isSoldOut = computed(() =>
+  props.plan.headcount_limit > 0 && props.plan.headcount_remaining !== null && props.plan.headcount_remaining === 0
+)
+const buttonText = computed(() => {
+  if (isSoldOut.value) return t('payment.admin.soldOut')
+  return isRenewal.value ? t('payment.renewNow') : t('payment.subscribeNow')
+})
 
 // Derived color classes from central config
 const accentClass = computed(() => platformAccentBarClass(platform.value))

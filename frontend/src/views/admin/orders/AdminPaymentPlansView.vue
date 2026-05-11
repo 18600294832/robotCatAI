@@ -36,6 +36,15 @@
         <template #cell-validity_days="{ value, row }">
           <span class="text-sm">{{ value }} {{ t('payment.admin.' + (row.validity_unit || 'days')) }}</span>
         </template>
+        <template #cell-headcount_limit="{ value, row }">
+          <div class="text-sm">
+            <span v-if="value === 0" class="text-gray-500">{{ t('payment.admin.unlimited') }}</span>
+            <span v-else class="font-medium">
+              {{ row.headcount_used }} / {{ value }}
+              <span v-if="row.headcount_remaining !== null && row.headcount_remaining === 0" class="ml-1 badge badge-danger">{{ t('payment.admin.soldOut') }}</span>
+            </span>
+          </div>
+        </template>
         <template #cell-for_sale="{ value, row }">
           <button
             type="button"
@@ -133,6 +142,7 @@ const planColumns = computed((): Column[] => [
   { key: 'group_id', label: t('payment.admin.group') },
   { key: 'price', label: t('payment.admin.price') },
   { key: 'validity_days', label: t('payment.admin.validityDays') },
+  { key: 'headcount_limit', label: t('payment.admin.headcountLimit') },
   { key: 'for_sale', label: t('payment.admin.forSale') },
   { key: 'sort_order', label: t('payment.admin.sortOrder') },
   { key: 'actions', label: t('common.actions') },

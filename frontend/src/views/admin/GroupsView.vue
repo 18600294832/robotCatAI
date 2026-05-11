@@ -197,6 +197,18 @@
             <div class="space-y-0.5 text-xs">
               <div>
                 <span class="text-gray-500 dark:text-gray-400">{{
+                  t("admin.groups.accountsAvailability")
+                }}</span>
+                <span
+                  :class="[
+                    'ml-1 font-medium',
+                    getAvailabilityLevel(row).color
+                  ]"
+                  >{{ getAvailabilityLevel(row).label }}</span
+                >
+              </div>
+              <div>
+                <span class="text-gray-500 dark:text-gray-400">{{
                   t("admin.groups.accountsAvailable")
                 }}</span>
                 <span
@@ -753,11 +765,11 @@
           </div>
         </div>
 
-        <!-- 支持的模型系列（仅 antigravity 平台） -->
+        <!-- 支持的模型（仅 antigravity 平台） -->
         <div v-if="createForm.platform === 'antigravity'" class="border-t pt-4">
           <div class="mb-1.5 flex items-center gap-1">
             <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-              {{ t("admin.groups.supportedScopes.title") }}
+              {{ t("admin.groups.supportedModels.title") }}
             </label>
             <!-- Help Tooltip -->
             <div class="group relative inline-flex">
@@ -774,7 +786,7 @@
                   class="rounded-lg bg-gray-900 p-3 text-white shadow-lg dark:bg-gray-800"
                 >
                   <p class="text-xs leading-relaxed text-gray-300">
-                    {{ t("admin.groups.supportedScopes.tooltip") }}
+                    {{ t("admin.groups.supportedModels.tooltip") }}
                   </p>
                   <div
                     class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 bg-gray-900 dark:bg-gray-800"
@@ -787,43 +799,43 @@
             <label class="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
-                :checked="createForm.supported_model_scopes.includes('claude')"
-                @change="toggleCreateScope('claude')"
+                :checked="createForm.supported_model_scopes.includes('claude-opus-4-7')"
+                @change="toggleCreateScope('claude-opus-4-7')"
                 class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:border-dark-600 dark:bg-dark-700"
               />
               <span class="text-sm text-gray-700 dark:text-gray-300">{{
-                t("admin.groups.supportedScopes.claude")
+                t("admin.groups.supportedModels.claudeOpus47")
               }}</span>
             </label>
             <label class="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 :checked="
-                  createForm.supported_model_scopes.includes('gemini_text')
+                  createForm.supported_model_scopes.includes('chatgpt-5-5')
                 "
-                @change="toggleCreateScope('gemini_text')"
+                @change="toggleCreateScope('chatgpt-5-5')"
                 class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:border-dark-600 dark:bg-dark-700"
               />
               <span class="text-sm text-gray-700 dark:text-gray-300">{{
-                t("admin.groups.supportedScopes.geminiText")
+                t("admin.groups.supportedModels.chatgpt55")
               }}</span>
             </label>
             <label class="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 :checked="
-                  createForm.supported_model_scopes.includes('gemini_image')
+                  createForm.supported_model_scopes.includes('chatgpt-5-4')
                 "
-                @change="toggleCreateScope('gemini_image')"
+                @change="toggleCreateScope('chatgpt-5-4')"
                 class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:border-dark-600 dark:bg-dark-700"
               />
               <span class="text-sm text-gray-700 dark:text-gray-300">{{
-                t("admin.groups.supportedScopes.geminiImage")
+                t("admin.groups.supportedModels.chatgpt54")
               }}</span>
             </label>
           </div>
           <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-            {{ t("admin.groups.supportedScopes.hint") }}
+            {{ t("admin.groups.supportedModels.hint") }}
           </p>
         </div>
 
@@ -1938,11 +1950,11 @@
           </div>
         </div>
 
-        <!-- 支持的模型系列（仅 antigravity 平台） -->
+        <!-- 支持的模型（仅 antigravity 平台） -->
         <div v-if="editForm.platform === 'antigravity'" class="border-t pt-4">
           <div class="mb-1.5 flex items-center gap-1">
             <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-              {{ t("admin.groups.supportedScopes.title") }}
+              {{ t("admin.groups.supportedModels.title") }}
             </label>
             <!-- Help Tooltip -->
             <div class="group relative inline-flex">
@@ -1959,7 +1971,7 @@
                   class="rounded-lg bg-gray-900 p-3 text-white shadow-lg dark:bg-gray-800"
                 >
                   <p class="text-xs leading-relaxed text-gray-300">
-                    {{ t("admin.groups.supportedScopes.tooltip") }}
+                    {{ t("admin.groups.supportedModels.tooltip") }}
                   </p>
                   <div
                     class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 bg-gray-900 dark:bg-gray-800"
@@ -1972,43 +1984,43 @@
             <label class="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
-                :checked="editForm.supported_model_scopes.includes('claude')"
-                @change="toggleEditScope('claude')"
+                :checked="editForm.supported_model_scopes.includes('claude-opus-4-7')"
+                @change="toggleEditScope('claude-opus-4-7')"
                 class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:border-dark-600 dark:bg-dark-700"
               />
               <span class="text-sm text-gray-700 dark:text-gray-300">{{
-                t("admin.groups.supportedScopes.claude")
+                t("admin.groups.supportedModels.claudeOpus47")
               }}</span>
             </label>
             <label class="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 :checked="
-                  editForm.supported_model_scopes.includes('gemini_text')
+                  editForm.supported_model_scopes.includes('chatgpt-5-5')
                 "
-                @change="toggleEditScope('gemini_text')"
+                @change="toggleEditScope('chatgpt-5-5')"
                 class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:border-dark-600 dark:bg-dark-700"
               />
               <span class="text-sm text-gray-700 dark:text-gray-300">{{
-                t("admin.groups.supportedScopes.geminiText")
+                t("admin.groups.supportedModels.chatgpt55")
               }}</span>
             </label>
             <label class="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 :checked="
-                  editForm.supported_model_scopes.includes('gemini_image')
+                  editForm.supported_model_scopes.includes('chatgpt-5-4')
                 "
-                @change="toggleEditScope('gemini_image')"
+                @change="toggleEditScope('chatgpt-5-4')"
                 class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:border-dark-600 dark:bg-dark-700"
               />
               <span class="text-sm text-gray-700 dark:text-gray-300">{{
-                t("admin.groups.supportedScopes.geminiImage")
+                t("admin.groups.supportedModels.chatgpt54")
               }}</span>
             </label>
           </div>
           <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-            {{ t("admin.groups.supportedScopes.hint") }}
+            {{ t("admin.groups.supportedModels.hint") }}
           </p>
         </div>
 
@@ -3131,8 +3143,8 @@ const createForm = reactive({
   require_privacy_set: false,
   // 模型路由开关
   model_routing_enabled: false,
-  // 支持的模型系列（仅 antigravity 平台）
-  supported_model_scopes: ["claude", "gemini_text", "gemini_image"] as string[],
+  // 支持的模型（仅 antigravity 平台）
+  supported_model_scopes: ["claude-opus-4-7", "chatgpt-5-5", "chatgpt-5-4"] as string[],
   // MCP XML 协议注入开关（仅 antigravity 平台）
   mcp_xml_inject: true,
   // 从分组复制账号
@@ -3417,8 +3429,8 @@ const editForm = reactive({
   require_privacy_set: false,
   // 模型路由开关
   model_routing_enabled: false,
-  // 支持的模型系列（仅 antigravity 平台）
-  supported_model_scopes: ["claude", "gemini_text", "gemini_image"] as string[],
+  // 支持的模型（仅 antigravity 平台）
+  supported_model_scopes: ["claude-opus-4-7", "chatgpt-5-5", "chatgpt-5-4"] as string[],
   // MCP XML 协议注入开关（仅 antigravity 平台）
   mcp_xml_inject: true,
   // 从分组复制账号
@@ -3549,6 +3561,42 @@ const formatCost = (cost: number): string => {
   return cost.toFixed(2);
 };
 
+// 计算账号可用率等级
+const getAvailabilityLevel = (group: AdminGroup): { label: string; color: string } => {
+  const total = group.account_count || 0;
+  if (total === 0) {
+    return {
+      label: t("admin.groups.availability.none"),
+      color: "text-gray-400 dark:text-gray-500"
+    };
+  }
+
+  const available = (group.active_account_count || 0) - (group.rate_limited_account_count || 0);
+  const rate = (available / total) * 100;
+
+  if (rate > 80) {
+    return {
+      label: t("admin.groups.availability.abundant"),
+      color: "text-emerald-600 dark:text-emerald-400"
+    };
+  } else if (rate >= 50) {
+    return {
+      label: t("admin.groups.availability.moderate"),
+      color: "text-blue-600 dark:text-blue-400"
+    };
+  } else if (rate > 0) {
+    return {
+      label: t("admin.groups.availability.scarce"),
+      color: "text-amber-600 dark:text-amber-400"
+    };
+  } else {
+    return {
+      label: t("admin.groups.availability.depleted"),
+      color: "text-red-600 dark:text-red-400"
+    };
+  }
+};
+
 const loadUsageSummary = async () => {
   usageLoading.value = true;
   try {
@@ -3653,7 +3701,7 @@ const closeCreateModal = () => {
   resetMessagesDispatchFormState(createForm);
   createForm.require_oauth_only = false;
   createForm.require_privacy_set = false;
-  createForm.supported_model_scopes = ["claude", "gemini_text", "gemini_image"];
+  createForm.supported_model_scopes = ["claude-opus-4-7", "chatgpt-5-5", "chatgpt-5-4"];
   createForm.mcp_xml_inject = true;
   createForm.copy_accounts_from_group_ids = [];
   createModelRoutingRules.value = [];
@@ -3785,9 +3833,9 @@ const handleEdit = async (group: AdminGroup) => {
   editForm.require_privacy_set = group.require_privacy_set ?? false;
   editForm.model_routing_enabled = group.model_routing_enabled || false;
   editForm.supported_model_scopes = group.supported_model_scopes || [
-    "claude",
-    "gemini_text",
-    "gemini_image",
+    "claude-opus-4-7",
+    "chatgpt-5-5",
+    "chatgpt-5-4",
   ];
   editForm.mcp_xml_inject = group.mcp_xml_inject ?? true;
   editForm.copy_accounts_from_group_ids = []; // 复制账号字段每次编辑时重置为空

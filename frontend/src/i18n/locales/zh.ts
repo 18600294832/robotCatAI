@@ -2224,14 +2224,22 @@ export default {
         enabled: '已启用',
         disabled: '已禁用'
       },
-      supportedScopes: {
-        title: '支持的模型系列',
-        tooltip: '选择此分组支持的模型系列。未勾选的系列将不会被路由到此分组。',
-        claude: 'Claude',
-        geminiText: 'Gemini Text',
-        geminiImage: 'Gemini Image',
-        hint: '至少选择一个模型系列'
-      }
+      supportedModels: {
+        title: '支持的模型',
+        tooltip: '选择此分组支持的具体模型。未勾选的模型将不会被路由到此分组。',
+        claudeOpus47: 'Claude Opus 4.7',
+        chatgpt55: 'ChatGPT 5.5',
+        chatgpt54: 'ChatGPT 5.4',
+        hint: '至少选择一个模型'
+      },
+      availability: {
+        none: '无账号',
+        abundant: '充足',
+        moderate: '适中',
+        scarce: '稀缺',
+        depleted: '耗尽'
+      },
+      accountsAvailability: '库存状态'
     },
 
     // Available Channels (aggregated read-only view)

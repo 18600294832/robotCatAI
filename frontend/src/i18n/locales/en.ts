@@ -2147,14 +2147,22 @@ export default {
         disabled: 'Disabled',
         hint: 'Only token categories in usage billing logs are adjusted. No per-request mapping state is persisted.'
       },
-      supportedScopes: {
-        title: 'Supported Model Families',
-        tooltip: 'Select the model families this group supports. Unchecked families will not be routed to this group.',
-        claude: 'Claude',
-        geminiText: 'Gemini Text',
-        geminiImage: 'Gemini Image',
-        hint: 'Select at least one model family'
-      }
+      supportedModels: {
+        title: 'Supported Models',
+        tooltip: 'Select the specific models this group supports. Unchecked models will not be routed to this group.',
+        claudeOpus47: 'Claude Opus 4.7',
+        chatgpt55: 'ChatGPT 5.5',
+        chatgpt54: 'ChatGPT 5.4',
+        hint: 'Select at least one model'
+      },
+      availability: {
+        none: 'No Accounts',
+        abundant: 'Abundant',
+        moderate: 'Moderate',
+        scarce: 'Scarce',
+        depleted: 'Depleted'
+      },
+      accountsAvailability: 'Availability'
     },
 
     // Available Channels (aggregated read-only view)

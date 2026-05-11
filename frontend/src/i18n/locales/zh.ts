@@ -6875,7 +6875,6 @@ export default {
       dailyLimit: '日限额',
       weeklyLimit: '周限额',
       monthlyLimit: '月限额',
-      unlimited: '无限制',
       searchUserSubs: '搜索用户订阅...',
       daily: '日',
       weekly: '周',

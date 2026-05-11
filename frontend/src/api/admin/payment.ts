@@ -49,6 +49,12 @@ export interface UpdatePaymentConfigRequest {
   help_text?: string
 }
 
+/** Admin plan with headcount statistics */
+export interface AdminSubscriptionPlan extends SubscriptionPlan {
+  headcount_used: number
+  headcount_remaining: number | null
+}
+
 export const adminPaymentAPI = {
   // ==================== Config ====================
 
@@ -131,12 +137,6 @@ export const adminPaymentAPI = {
   },
 
   // ==================== Subscription Plans ====================
-
-  /** Admin plan with headcount statistics */
-  export interface AdminSubscriptionPlan extends SubscriptionPlan {
-    headcount_used: number
-    headcount_remaining: number | null
-  }
 
   /** Get all subscription plans */
   getPlans() {

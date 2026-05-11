@@ -6691,7 +6691,6 @@ export default {
       dailyLimit: 'Daily Limit',
       weeklyLimit: 'Weekly Limit',
       monthlyLimit: 'Monthly Limit',
-      unlimited: 'Unlimited',
       searchUserSubs: 'Search user subscriptions...',
       daily: 'D',
       weekly: 'W',

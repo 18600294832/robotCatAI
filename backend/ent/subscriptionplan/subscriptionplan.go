@@ -100,6 +100,8 @@ var (
 	DefaultSortOrder int
 	// DefaultHeadcountLimit holds the default value on creation for the "headcount_limit" field.
 	DefaultHeadcountLimit int
+	// DefaultModelTags holds the default value on creation for the "model_tags" field.
+	DefaultModelTags []string
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.

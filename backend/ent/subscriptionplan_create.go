@@ -267,6 +267,10 @@ func (_c *SubscriptionPlanCreate) defaults() {
 		v := subscriptionplan.DefaultHeadcountLimit
 		_c.mutation.SetHeadcountLimit(v)
 	}
+	if _, ok := _c.mutation.ModelTags(); !ok {
+		v := subscriptionplan.DefaultModelTags
+		_c.mutation.SetModelTags(v)
+	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := subscriptionplan.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)

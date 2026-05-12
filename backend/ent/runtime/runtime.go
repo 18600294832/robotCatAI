@@ -1512,6 +1512,10 @@ func init() {
 	subscriptionplanDescHeadcountLimit := subscriptionplanFields[11].Descriptor()
 	// subscriptionplan.DefaultHeadcountLimit holds the default value on creation for the headcount_limit field.
 	subscriptionplan.DefaultHeadcountLimit = subscriptionplanDescHeadcountLimit.Default.(int)
+	// subscriptionplanDescModelTags is the schema descriptor for model_tags field.
+	subscriptionplanDescModelTags := subscriptionplanFields[12].Descriptor()
+	// subscriptionplan.DefaultModelTags holds the default value on creation for the model_tags field.
+	subscriptionplan.DefaultModelTags = subscriptionplanDescModelTags.Default.([]string)
 	// subscriptionplanDescCreatedAt is the schema descriptor for created_at field.
 	subscriptionplanDescCreatedAt := subscriptionplanFields[13].Descriptor()
 	// subscriptionplan.DefaultCreatedAt holds the default value on creation for the created_at field.

@@ -57,7 +57,31 @@
       </div>
       <div>
         <label class="input-label">{{ t('payment.admin.modelTags') }}</label>
-        <textarea v-model="planModelTagsText" rows="2" class="input" :placeholder="t('payment.admin.modelTagsPlaceholder')"></textarea>
+        <div class="space-y-2">
+          <div v-for="(tag, index) in planModelTags" :key="index" class="flex items-center gap-2">
+            <input
+              v-model="planModelTags[index]"
+              type="text"
+              class="input flex-1"
+              :placeholder="t('payment.admin.modelTagsPlaceholder')"
+            />
+            <button
+              type="button"
+              @click="removeModelTag(index)"
+              class="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 transition-colors hover:border-red-500 hover:bg-red-50 hover:text-red-600 dark:border-dark-600 dark:text-gray-400 dark:hover:border-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400"
+            >
+              <Icon name="x" size="sm" />
+            </button>
+          </div>
+          <button
+            type="button"
+            @click="addModelTag"
+            class="flex w-full items-center justify-center gap-1 rounded-lg border border-dashed border-gray-300 py-2 text-sm text-gray-600 transition-colors hover:border-primary-500 hover:bg-primary-50 hover:text-primary-600 dark:border-dark-600 dark:text-gray-400 dark:hover:border-primary-500 dark:hover:bg-primary-900/20 dark:hover:text-primary-400"
+          >
+            <Icon name="plus" size="sm" />
+            <span>{{ t('payment.admin.addModelTag') }}</span>
+          </button>
+        </div>
         <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ t('payment.admin.modelTagsHint') }}</p>
       </div>
       <div class="flex items-center gap-3">
@@ -117,7 +141,7 @@ const appStore = useAppStore()
 const saving = ref(false)
 const planForm = reactive({ name: '', group_id: null as number | null, description: '', price: 0, original_price: 0, validity_days: 30, validity_unit: 'days', sort_order: 0, headcount_limit: 0, for_sale: true })
 const planFeaturesText = ref('')
-const planModelTagsText = ref('')
+const planModelTags = ref<string[]>([''])
 
 const validityUnitOptions = computed(() => [
   { value: 'days', label: t('payment.admin.days') },
@@ -146,18 +170,30 @@ watch(() => props.show, (visible) => {
   if (props.plan) {
     Object.assign(planForm, { name: props.plan.name, group_id: props.plan.group_id, description: props.plan.description, price: props.plan.price, original_price: props.plan.original_price || 0, validity_days: props.plan.validity_days, validity_unit: props.plan.validity_unit || 'days', sort_order: props.plan.sort_order || 0, headcount_limit: props.plan.headcount_limit || 0, for_sale: props.plan.for_sale })
     planFeaturesText.value = (props.plan.features || []).join('\n')
-    planModelTagsText.value = (props.plan.model_tags || []).join('\n')
+    planModelTags.value = props.plan.model_tags && props.plan.model_tags.length > 0 ? [...props.plan.model_tags] : ['']
   } else {
     Object.assign(planForm, { name: '', group_id: null, description: '', price: 0, original_price: 0, validity_days: 30, validity_unit: 'days', sort_order: 0, headcount_limit: 0, for_sale: true })
     planFeaturesText.value = ''
-    planModelTagsText.value = ''
+    planModelTags.value = ['']
   }
 })
+
+function addModelTag() {
+  planModelTags.value.push('')
+}
+
+function removeModelTag(index: number) {
+  if (planModelTags.value.length > 1) {
+    planModelTags.value.splice(index, 1)
+  } else {
+    planModelTags.value = ['']
+  }
+}
 
 /** Build request payload with snake_case keys matching backend JSON tags */
 function buildPlanPayload() {
   const features = planFeaturesText.value.split('\n').map(f => f.trim()).filter(Boolean).join('\n')
-  const model_tags = planModelTagsText.value.split('\n').map(t => t.trim()).filter(Boolean)
+  const model_tags = planModelTags.value.map(t => t.trim()).filter(Boolean)
   return {
     name: planForm.name,
     group_id: planForm.group_id,

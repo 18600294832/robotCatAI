@@ -58,7 +58,7 @@
       <div>
         <label class="input-label">{{ t('payment.admin.modelTags') }}</label>
         <div class="space-y-2">
-          <div v-for="(tag, index) in planModelTags" :key="index" class="flex items-center gap-2">
+          <div v-for="(_tag, index) in planModelTags" :key="index" class="flex items-center gap-2">
             <input
               v-model="planModelTags[index]"
               type="text"

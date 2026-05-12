@@ -56,26 +56,34 @@ func (h *PaymentHandler) GetPlans(c *gin.Context) {
 	}
 	// Enrich plans with group platform and headcount stats
 	type planWithPlatform struct {
-		ID                 int64    `json:"id"`
-		GroupID            int64    `json:"group_id"`
-		GroupPlatform      string   `json:"group_platform"`
-		Name               string   `json:"name"`
-		Description        string   `json:"description"`
-		Price              float64  `json:"price"`
-		OriginalPrice      *float64 `json:"original_price,omitempty"`
-		ValidityDays       int      `json:"validity_days"`
-		ValidityUnit       string   `json:"validity_unit"`
-		Features           string   `json:"features"`
-		ProductName        string   `json:"product_name"`
-		ForSale            bool     `json:"for_sale"`
-		SortOrder          int      `json:"sort_order"`
-		HeadcountLimit     int      `json:"headcount_limit"`
-		HeadcountUsed      int64    `json:"headcount_used"`
-		HeadcountRemaining *int64   `json:"headcount_remaining"`
+		ID                     int64    `json:"id"`
+		GroupID                int64    `json:"group_id"`
+		GroupPlatform          string   `json:"group_platform"`
+		GroupName              string   `json:"group_name"`
+		RateMultiplier         float64  `json:"rate_multiplier"`
+		DailyLimitUSD          *float64 `json:"daily_limit_usd"`
+		WeeklyLimitUSD         *float64 `json:"weekly_limit_usd"`
+		MonthlyLimitUSD        *float64 `json:"monthly_limit_usd"`
+		SupportedModelScopes   []string `json:"supported_model_scopes"`
+		ModelTags              []string `json:"model_tags"`
+		Name                   string   `json:"name"`
+		Description            string   `json:"description"`
+		Price                  float64  `json:"price"`
+		OriginalPrice          *float64 `json:"original_price,omitempty"`
+		ValidityDays           int      `json:"validity_days"`
+		ValidityUnit           string   `json:"validity_unit"`
+		Features               string   `json:"features"`
+		ProductName            string   `json:"product_name"`
+		ForSale                bool     `json:"for_sale"`
+		SortOrder              int      `json:"sort_order"`
+		HeadcountLimit         int      `json:"headcount_limit"`
+		HeadcountUsed          int64    `json:"headcount_used"`
+		HeadcountRemaining     *int64   `json:"headcount_remaining"`
 	}
-	platformMap := h.configService.GetGroupPlatformMap(c.Request.Context(), plans)
+	groupInfo := h.configService.GetGroupInfoMap(c.Request.Context(), plans)
 	result := make([]planWithPlatform, 0, len(plans))
 	for _, p := range plans {
+		gi := groupInfo[p.GroupID]
 		used, _ := h.userSubRepo.CountActiveByPlanID(c.Request.Context(), int64(p.ID))
 		var remaining *int64
 		if p.HeadcountLimit > 0 {
@@ -86,7 +94,11 @@ func (h *PaymentHandler) GetPlans(c *gin.Context) {
 			remaining = &r
 		}
 		result = append(result, planWithPlatform{
-			ID: int64(p.ID), GroupID: p.GroupID, GroupPlatform: platformMap[p.GroupID],
+			ID: int64(p.ID), GroupID: p.GroupID,
+			GroupPlatform: gi.Platform, GroupName: gi.Name,
+			RateMultiplier: gi.RateMultiplier, DailyLimitUSD: gi.DailyLimitUSD,
+			WeeklyLimitUSD: gi.WeeklyLimitUSD, MonthlyLimitUSD: gi.MonthlyLimitUSD,
+			SupportedModelScopes: gi.ModelScopes, ModelTags: p.ModelTags,
 			Name: p.Name, Description: p.Description, Price: p.Price, OriginalPrice: p.OriginalPrice,
 			ValidityDays: p.ValidityDays, ValidityUnit: p.ValidityUnit, Features: p.Features,
 			ProductName: p.ProductName, ForSale: p.ForSale, SortOrder: p.SortOrder,
@@ -147,7 +159,7 @@ func (h *PaymentHandler) GetCheckoutInfo(c *gin.Context) {
 			GroupPlatform: gi.Platform, GroupName: gi.Name,
 			RateMultiplier: gi.RateMultiplier, DailyLimitUSD: gi.DailyLimitUSD,
 			WeeklyLimitUSD: gi.WeeklyLimitUSD, MonthlyLimitUSD: gi.MonthlyLimitUSD,
-			ModelScopes: gi.ModelScopes,
+			ModelScopes: gi.ModelScopes, ModelTags: p.ModelTags,
 			Name:        p.Name, Description: p.Description, Price: p.Price, OriginalPrice: p.OriginalPrice,
 			ValidityDays: p.ValidityDays, ValidityUnit: p.ValidityUnit, Features: parseFeatures(p.Features),
 			ProductName:        p.ProductName,
@@ -194,6 +206,7 @@ type checkoutPlan struct {
 	WeeklyLimitUSD     *float64 `json:"weekly_limit_usd"`
 	MonthlyLimitUSD    *float64 `json:"monthly_limit_usd"`
 	ModelScopes        []string `json:"supported_model_scopes"`
+	ModelTags          []string `json:"model_tags"`
 	Name               string   `json:"name"`
 	Description        string   `json:"description"`
 	Price              float64  `json:"price"`

@@ -501,6 +501,20 @@
           <p class="input-hint">{{ t("admin.groups.rateMultiplierHint") }}</p>
         </div>
         <div>
+          <label class="input-label">{{
+            t("admin.groups.form.extraRateMultiplier")
+          }}</label>
+          <input
+            v-model.number="createForm.extra_rate_multiplier"
+            type="number"
+            step="0.001"
+            min="0"
+            class="input"
+            :placeholder="t('admin.groups.form.extraRateMultiplierPlaceholder')"
+          />
+          <p class="input-hint">{{ t("admin.groups.extraRateMultiplierHint") }}</p>
+        </div>
+        <div>
           <label class="input-label">{{ t("admin.groups.form.rpmLimit") }}</label>
           <input
             v-model.number="createForm.rpm_limit"
@@ -1682,6 +1696,20 @@
             class="input"
             data-tour="group-form-multiplier"
           />
+        </div>
+        <div>
+          <label class="input-label">{{
+            t("admin.groups.form.extraRateMultiplier")
+          }}</label>
+          <input
+            v-model.number="editForm.extra_rate_multiplier"
+            type="number"
+            step="0.001"
+            min="0"
+            class="input"
+            :placeholder="t('admin.groups.form.extraRateMultiplierPlaceholder')"
+          />
+          <p class="input-hint">{{ t("admin.groups.extraRateMultiplierHint") }}</p>
         </div>
         <div>
           <label class="input-label">{{ t("admin.groups.form.rpmLimit") }}</label>
@@ -3104,6 +3132,7 @@ const createForm = reactive({
   description: "",
   platform: "anthropic" as GroupPlatform,
   rate_multiplier: 1.0,
+  extra_rate_multiplier: 0.0,
   is_exclusive: false,
   subscription_type: "standard" as SubscriptionType,
   daily_limit_usd: null as number | null,
@@ -3388,6 +3417,7 @@ const editForm = reactive({
   description: "",
   platform: "anthropic" as GroupPlatform,
   rate_multiplier: 1.0,
+  extra_rate_multiplier: 0.0,
   is_exclusive: false,
   status: "active" as "active" | "inactive",
   subscription_type: "standard" as SubscriptionType,
@@ -3754,6 +3784,7 @@ const handleEdit = async (group: AdminGroup) => {
   editForm.description = group.description || "";
   editForm.platform = group.platform;
   editForm.rate_multiplier = group.rate_multiplier;
+  editForm.extra_rate_multiplier = group.extra_rate_multiplier ?? 0.0;
   editForm.is_exclusive = group.is_exclusive;
   editForm.status = group.status;
   editForm.subscription_type = group.subscription_type || "standard";

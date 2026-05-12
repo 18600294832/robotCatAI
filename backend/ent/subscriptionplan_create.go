@@ -166,6 +166,12 @@ func (_c *SubscriptionPlanCreate) SetNillableHeadcountLimit(v *int) *Subscriptio
 	return _c
 }
 
+// SetModelTags sets the "model_tags" field.
+func (_c *SubscriptionPlanCreate) SetModelTags(v []string) *SubscriptionPlanCreate {
+	_c.mutation.SetModelTags(v)
+	return _c
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (_c *SubscriptionPlanCreate) SetCreatedAt(v time.Time) *SubscriptionPlanCreate {
 	_c.mutation.SetCreatedAt(v)
@@ -401,6 +407,10 @@ func (_c *SubscriptionPlanCreate) createSpec() (*SubscriptionPlan, *sqlgraph.Cre
 	if value, ok := _c.mutation.HeadcountLimit(); ok {
 		_spec.SetField(subscriptionplan.FieldHeadcountLimit, field.TypeInt, value)
 		_node.HeadcountLimit = value
+	}
+	if value, ok := _c.mutation.ModelTags(); ok {
+		_spec.SetField(subscriptionplan.FieldModelTags, field.TypeJSON, value)
+		_node.ModelTags = value
 	}
 	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(subscriptionplan.FieldCreatedAt, field.TypeTime, value)
@@ -645,6 +655,24 @@ func (u *SubscriptionPlanUpsert) UpdateHeadcountLimit() *SubscriptionPlanUpsert 
 // AddHeadcountLimit adds v to the "headcount_limit" field.
 func (u *SubscriptionPlanUpsert) AddHeadcountLimit(v int) *SubscriptionPlanUpsert {
 	u.Add(subscriptionplan.FieldHeadcountLimit, v)
+	return u
+}
+
+// SetModelTags sets the "model_tags" field.
+func (u *SubscriptionPlanUpsert) SetModelTags(v []string) *SubscriptionPlanUpsert {
+	u.Set(subscriptionplan.FieldModelTags, v)
+	return u
+}
+
+// UpdateModelTags sets the "model_tags" field to the value that was provided on create.
+func (u *SubscriptionPlanUpsert) UpdateModelTags() *SubscriptionPlanUpsert {
+	u.SetExcluded(subscriptionplan.FieldModelTags)
+	return u
+}
+
+// ClearModelTags clears the value of the "model_tags" field.
+func (u *SubscriptionPlanUpsert) ClearModelTags() *SubscriptionPlanUpsert {
+	u.SetNull(subscriptionplan.FieldModelTags)
 	return u
 }
 
@@ -919,6 +947,27 @@ func (u *SubscriptionPlanUpsertOne) AddHeadcountLimit(v int) *SubscriptionPlanUp
 func (u *SubscriptionPlanUpsertOne) UpdateHeadcountLimit() *SubscriptionPlanUpsertOne {
 	return u.Update(func(s *SubscriptionPlanUpsert) {
 		s.UpdateHeadcountLimit()
+	})
+}
+
+// SetModelTags sets the "model_tags" field.
+func (u *SubscriptionPlanUpsertOne) SetModelTags(v []string) *SubscriptionPlanUpsertOne {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.SetModelTags(v)
+	})
+}
+
+// UpdateModelTags sets the "model_tags" field to the value that was provided on create.
+func (u *SubscriptionPlanUpsertOne) UpdateModelTags() *SubscriptionPlanUpsertOne {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.UpdateModelTags()
+	})
+}
+
+// ClearModelTags clears the value of the "model_tags" field.
+func (u *SubscriptionPlanUpsertOne) ClearModelTags() *SubscriptionPlanUpsertOne {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.ClearModelTags()
 	})
 }
 
@@ -1361,6 +1410,27 @@ func (u *SubscriptionPlanUpsertBulk) AddHeadcountLimit(v int) *SubscriptionPlanU
 func (u *SubscriptionPlanUpsertBulk) UpdateHeadcountLimit() *SubscriptionPlanUpsertBulk {
 	return u.Update(func(s *SubscriptionPlanUpsert) {
 		s.UpdateHeadcountLimit()
+	})
+}
+
+// SetModelTags sets the "model_tags" field.
+func (u *SubscriptionPlanUpsertBulk) SetModelTags(v []string) *SubscriptionPlanUpsertBulk {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.SetModelTags(v)
+	})
+}
+
+// UpdateModelTags sets the "model_tags" field to the value that was provided on create.
+func (u *SubscriptionPlanUpsertBulk) UpdateModelTags() *SubscriptionPlanUpsertBulk {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.UpdateModelTags()
+	})
+}
+
+// ClearModelTags clears the value of the "model_tags" field.
+func (u *SubscriptionPlanUpsertBulk) ClearModelTags() *SubscriptionPlanUpsertBulk {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.ClearModelTags()
 	})
 }
 

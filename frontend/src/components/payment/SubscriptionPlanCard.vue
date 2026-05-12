@@ -85,7 +85,7 @@
         <div class="flex items-center justify-between text-xs">
           <span class="text-gray-500 dark:text-dark-400">{{ t('payment.planCard.remaining') }}</span>
           <span v-if="plan.headcount_remaining !== null && plan.headcount_remaining > 0" class="font-semibold text-gray-700 dark:text-gray-300">
-            {{ plan.headcount_remaining }} / {{ plan.headcount_limit }}
+            {{ getHeadcountStatusText(plan.headcount_remaining, plan.headcount_limit) }}
           </span>
           <span v-else-if="plan.headcount_remaining === 0" class="font-semibold text-red-600 dark:text-red-400">
             {{ t('payment.admin.soldOut') }}
@@ -168,6 +168,11 @@ const MODEL_SCOPE_LABELS: Record<string, string> = {
 }
 
 const modelScopeLabels = computed(() => {
+  // 优先使用套餐自定义的 model_tags
+  if (props.plan.model_tags && props.plan.model_tags.length > 0) {
+    return props.plan.model_tags
+  }
+  // 否则使用分组的 supported_model_scopes
   const scopes = props.plan.supported_model_scopes
   if (!scopes || scopes.length === 0) return []
   return scopes.map(s => MODEL_SCOPE_LABELS[s] || s)
@@ -179,4 +184,18 @@ const validitySuffix = computed(() => {
   if (u === 'year') return t('payment.perYear')
   return `${props.plan.validity_days}${t('payment.days')}`
 })
+
+function getHeadcountStatusText(remaining: number, limit: number): string {
+  const percentage = (remaining / limit) * 100
+
+  if (percentage >= 50) {
+    return t('payment.planCard.headcountAbundant')
+  } else if (percentage >= 20) {
+    return t('payment.planCard.headcountLimited')
+  } else if (percentage > 0) {
+    return t('payment.planCard.headcountTight')
+  }
+
+  return t('payment.admin.soldOut')
+}
 </script>

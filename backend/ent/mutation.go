@@ -14752,6 +14752,8 @@ type GroupMutation struct {
 	description                             *string
 	rate_multiplier                         *float64
 	addrate_multiplier                      *float64
+	extra_rate_multiplier                   *float64
+	addextra_rate_multiplier                *float64
 	is_exclusive                            *bool
 	status                                  *string
 	platform                                *string
@@ -15175,6 +15177,62 @@ func (m *GroupMutation) AddedRateMultiplier() (r float64, exists bool) {
 func (m *GroupMutation) ResetRateMultiplier() {
 	m.rate_multiplier = nil
 	m.addrate_multiplier = nil
+}
+
+// SetExtraRateMultiplier sets the "extra_rate_multiplier" field.
+func (m *GroupMutation) SetExtraRateMultiplier(f float64) {
+	m.extra_rate_multiplier = &f
+	m.addextra_rate_multiplier = nil
+}
+
+// ExtraRateMultiplier returns the value of the "extra_rate_multiplier" field in the mutation.
+func (m *GroupMutation) ExtraRateMultiplier() (r float64, exists bool) {
+	v := m.extra_rate_multiplier
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldExtraRateMultiplier returns the old "extra_rate_multiplier" field's value of the Group entity.
+// If the Group object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GroupMutation) OldExtraRateMultiplier(ctx context.Context) (v float64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldExtraRateMultiplier is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldExtraRateMultiplier requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldExtraRateMultiplier: %w", err)
+	}
+	return oldValue.ExtraRateMultiplier, nil
+}
+
+// AddExtraRateMultiplier adds f to the "extra_rate_multiplier" field.
+func (m *GroupMutation) AddExtraRateMultiplier(f float64) {
+	if m.addextra_rate_multiplier != nil {
+		*m.addextra_rate_multiplier += f
+	} else {
+		m.addextra_rate_multiplier = &f
+	}
+}
+
+// AddedExtraRateMultiplier returns the value that was added to the "extra_rate_multiplier" field in this mutation.
+func (m *GroupMutation) AddedExtraRateMultiplier() (r float64, exists bool) {
+	v := m.addextra_rate_multiplier
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetExtraRateMultiplier resets all changes to the "extra_rate_multiplier" field.
+func (m *GroupMutation) ResetExtraRateMultiplier() {
+	m.extra_rate_multiplier = nil
+	m.addextra_rate_multiplier = nil
 }
 
 // SetIsExclusive sets the "is_exclusive" field.
@@ -16923,7 +16981,7 @@ func (m *GroupMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *GroupMutation) Fields() []string {
-	fields := make([]string, 0, 34)
+	fields := make([]string, 0, 35)
 	if m.created_at != nil {
 		fields = append(fields, group.FieldCreatedAt)
 	}
@@ -16941,6 +16999,9 @@ func (m *GroupMutation) Fields() []string {
 	}
 	if m.rate_multiplier != nil {
 		fields = append(fields, group.FieldRateMultiplier)
+	}
+	if m.extra_rate_multiplier != nil {
+		fields = append(fields, group.FieldExtraRateMultiplier)
 	}
 	if m.is_exclusive != nil {
 		fields = append(fields, group.FieldIsExclusive)
@@ -17046,6 +17107,8 @@ func (m *GroupMutation) Field(name string) (ent.Value, bool) {
 		return m.Description()
 	case group.FieldRateMultiplier:
 		return m.RateMultiplier()
+	case group.FieldExtraRateMultiplier:
+		return m.ExtraRateMultiplier()
 	case group.FieldIsExclusive:
 		return m.IsExclusive()
 	case group.FieldStatus:
@@ -17123,6 +17186,8 @@ func (m *GroupMutation) OldField(ctx context.Context, name string) (ent.Value, e
 		return m.OldDescription(ctx)
 	case group.FieldRateMultiplier:
 		return m.OldRateMultiplier(ctx)
+	case group.FieldExtraRateMultiplier:
+		return m.OldExtraRateMultiplier(ctx)
 	case group.FieldIsExclusive:
 		return m.OldIsExclusive(ctx)
 	case group.FieldStatus:
@@ -17229,6 +17294,13 @@ func (m *GroupMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRateMultiplier(v)
+		return nil
+	case group.FieldExtraRateMultiplier:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetExtraRateMultiplier(v)
 		return nil
 	case group.FieldIsExclusive:
 		v, ok := value.(bool)
@@ -17437,6 +17509,9 @@ func (m *GroupMutation) AddedFields() []string {
 	if m.addrate_multiplier != nil {
 		fields = append(fields, group.FieldRateMultiplier)
 	}
+	if m.addextra_rate_multiplier != nil {
+		fields = append(fields, group.FieldExtraRateMultiplier)
+	}
 	if m.adddaily_limit_usd != nil {
 		fields = append(fields, group.FieldDailyLimitUsd)
 	}
@@ -17483,6 +17558,8 @@ func (m *GroupMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case group.FieldRateMultiplier:
 		return m.AddedRateMultiplier()
+	case group.FieldExtraRateMultiplier:
+		return m.AddedExtraRateMultiplier()
 	case group.FieldDailyLimitUsd:
 		return m.AddedDailyLimitUsd()
 	case group.FieldWeeklyLimitUsd:
@@ -17522,6 +17599,13 @@ func (m *GroupMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddRateMultiplier(v)
+		return nil
+	case group.FieldExtraRateMultiplier:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddExtraRateMultiplier(v)
 		return nil
 	case group.FieldDailyLimitUsd:
 		v, ok := value.(float64)
@@ -17720,6 +17804,9 @@ func (m *GroupMutation) ResetField(name string) error {
 		return nil
 	case group.FieldRateMultiplier:
 		m.ResetRateMultiplier()
+		return nil
+	case group.FieldExtraRateMultiplier:
+		m.ResetExtraRateMultiplier()
 		return nil
 	case group.FieldIsExclusive:
 		m.ResetIsExclusive()
@@ -30607,6 +30694,8 @@ type SubscriptionPlanMutation struct {
 	addsort_order      *int
 	headcount_limit    *int
 	addheadcount_limit *int
+	model_tags         *[]string
+	appendmodel_tags   []string
 	created_at         *time.Time
 	updated_at         *time.Time
 	clearedFields      map[string]struct{}
@@ -31279,6 +31368,71 @@ func (m *SubscriptionPlanMutation) ResetHeadcountLimit() {
 	m.addheadcount_limit = nil
 }
 
+// SetModelTags sets the "model_tags" field.
+func (m *SubscriptionPlanMutation) SetModelTags(s []string) {
+	m.model_tags = &s
+	m.appendmodel_tags = nil
+}
+
+// ModelTags returns the value of the "model_tags" field in the mutation.
+func (m *SubscriptionPlanMutation) ModelTags() (r []string, exists bool) {
+	v := m.model_tags
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldModelTags returns the old "model_tags" field's value of the SubscriptionPlan entity.
+// If the SubscriptionPlan object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SubscriptionPlanMutation) OldModelTags(ctx context.Context) (v []string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldModelTags is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldModelTags requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldModelTags: %w", err)
+	}
+	return oldValue.ModelTags, nil
+}
+
+// AppendModelTags adds s to the "model_tags" field.
+func (m *SubscriptionPlanMutation) AppendModelTags(s []string) {
+	m.appendmodel_tags = append(m.appendmodel_tags, s...)
+}
+
+// AppendedModelTags returns the list of values that were appended to the "model_tags" field in this mutation.
+func (m *SubscriptionPlanMutation) AppendedModelTags() ([]string, bool) {
+	if len(m.appendmodel_tags) == 0 {
+		return nil, false
+	}
+	return m.appendmodel_tags, true
+}
+
+// ClearModelTags clears the value of the "model_tags" field.
+func (m *SubscriptionPlanMutation) ClearModelTags() {
+	m.model_tags = nil
+	m.appendmodel_tags = nil
+	m.clearedFields[subscriptionplan.FieldModelTags] = struct{}{}
+}
+
+// ModelTagsCleared returns if the "model_tags" field was cleared in this mutation.
+func (m *SubscriptionPlanMutation) ModelTagsCleared() bool {
+	_, ok := m.clearedFields[subscriptionplan.FieldModelTags]
+	return ok
+}
+
+// ResetModelTags resets all changes to the "model_tags" field.
+func (m *SubscriptionPlanMutation) ResetModelTags() {
+	m.model_tags = nil
+	m.appendmodel_tags = nil
+	delete(m.clearedFields, subscriptionplan.FieldModelTags)
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (m *SubscriptionPlanMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
@@ -31385,7 +31539,7 @@ func (m *SubscriptionPlanMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SubscriptionPlanMutation) Fields() []string {
-	fields := make([]string, 0, 14)
+	fields := make([]string, 0, 15)
 	if m.group_id != nil {
 		fields = append(fields, subscriptionplan.FieldGroupID)
 	}
@@ -31421,6 +31575,9 @@ func (m *SubscriptionPlanMutation) Fields() []string {
 	}
 	if m.headcount_limit != nil {
 		fields = append(fields, subscriptionplan.FieldHeadcountLimit)
+	}
+	if m.model_tags != nil {
+		fields = append(fields, subscriptionplan.FieldModelTags)
 	}
 	if m.created_at != nil {
 		fields = append(fields, subscriptionplan.FieldCreatedAt)
@@ -31460,6 +31617,8 @@ func (m *SubscriptionPlanMutation) Field(name string) (ent.Value, bool) {
 		return m.SortOrder()
 	case subscriptionplan.FieldHeadcountLimit:
 		return m.HeadcountLimit()
+	case subscriptionplan.FieldModelTags:
+		return m.ModelTags()
 	case subscriptionplan.FieldCreatedAt:
 		return m.CreatedAt()
 	case subscriptionplan.FieldUpdatedAt:
@@ -31497,6 +31656,8 @@ func (m *SubscriptionPlanMutation) OldField(ctx context.Context, name string) (e
 		return m.OldSortOrder(ctx)
 	case subscriptionplan.FieldHeadcountLimit:
 		return m.OldHeadcountLimit(ctx)
+	case subscriptionplan.FieldModelTags:
+		return m.OldModelTags(ctx)
 	case subscriptionplan.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case subscriptionplan.FieldUpdatedAt:
@@ -31593,6 +31754,13 @@ func (m *SubscriptionPlanMutation) SetField(name string, value ent.Value) error 
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetHeadcountLimit(v)
+		return nil
+	case subscriptionplan.FieldModelTags:
+		v, ok := value.([]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetModelTags(v)
 		return nil
 	case subscriptionplan.FieldCreatedAt:
 		v, ok := value.(time.Time)
@@ -31716,6 +31884,9 @@ func (m *SubscriptionPlanMutation) ClearedFields() []string {
 	if m.FieldCleared(subscriptionplan.FieldOriginalPrice) {
 		fields = append(fields, subscriptionplan.FieldOriginalPrice)
 	}
+	if m.FieldCleared(subscriptionplan.FieldModelTags) {
+		fields = append(fields, subscriptionplan.FieldModelTags)
+	}
 	return fields
 }
 
@@ -31732,6 +31903,9 @@ func (m *SubscriptionPlanMutation) ClearField(name string) error {
 	switch name {
 	case subscriptionplan.FieldOriginalPrice:
 		m.ClearOriginalPrice()
+		return nil
+	case subscriptionplan.FieldModelTags:
+		m.ClearModelTags()
 		return nil
 	}
 	return fmt.Errorf("unknown SubscriptionPlan nullable field %s", name)
@@ -31776,6 +31950,9 @@ func (m *SubscriptionPlanMutation) ResetField(name string) error {
 		return nil
 	case subscriptionplan.FieldHeadcountLimit:
 		m.ResetHeadcountLimit()
+		return nil
+	case subscriptionplan.FieldModelTags:
+		m.ResetModelTags()
 		return nil
 	case subscriptionplan.FieldCreatedAt:
 		m.ResetCreatedAt()

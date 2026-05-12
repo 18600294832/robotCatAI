@@ -37,6 +37,8 @@ const (
 	FieldSortOrder = "sort_order"
 	// FieldHeadcountLimit holds the string denoting the headcount_limit field in the database.
 	FieldHeadcountLimit = "headcount_limit"
+	// FieldModelTags holds the string denoting the model_tags field in the database.
+	FieldModelTags = "model_tags"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -60,6 +62,7 @@ var Columns = []string{
 	FieldForSale,
 	FieldSortOrder,
 	FieldHeadcountLimit,
+	FieldModelTags,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 }

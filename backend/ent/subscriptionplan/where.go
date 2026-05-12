@@ -709,6 +709,16 @@ func HeadcountLimitLTE(v int) predicate.SubscriptionPlan {
 	return predicate.SubscriptionPlan(sql.FieldLTE(FieldHeadcountLimit, v))
 }
 
+// ModelTagsIsNil applies the IsNil predicate on the "model_tags" field.
+func ModelTagsIsNil() predicate.SubscriptionPlan {
+	return predicate.SubscriptionPlan(sql.FieldIsNull(FieldModelTags))
+}
+
+// ModelTagsNotNil applies the NotNil predicate on the "model_tags" field.
+func ModelTagsNotNil() predicate.SubscriptionPlan {
+	return predicate.SubscriptionPlan(sql.FieldNotNull(FieldModelTags))
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.SubscriptionPlan {
 	return predicate.SubscriptionPlan(sql.FieldEQ(FieldCreatedAt, v))

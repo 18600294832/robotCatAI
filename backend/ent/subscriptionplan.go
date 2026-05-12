@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -41,6 +42,8 @@ type SubscriptionPlan struct {
 	SortOrder int `json:"sort_order,omitempty"`
 	// Maximum number of active subscriptions allowed for this plan (0 = unlimited)
 	HeadcountLimit int `json:"headcount_limit,omitempty"`
+	// 套餐展示的模型标签，例如 ["Claude", "Gemini", "Imagen"]
+	ModelTags []string `json:"model_tags,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -53,6 +56,8 @@ func (*SubscriptionPlan) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case subscriptionplan.FieldModelTags:
+			values[i] = new([]byte)
 		case subscriptionplan.FieldForSale:
 			values[i] = new(sql.NullBool)
 		case subscriptionplan.FieldPrice, subscriptionplan.FieldOriginalPrice:
@@ -157,6 +162,14 @@ func (_m *SubscriptionPlan) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.HeadcountLimit = int(value.Int64)
 			}
+		case subscriptionplan.FieldModelTags:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field model_tags", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &_m.ModelTags); err != nil {
+					return fmt.Errorf("unmarshal field model_tags: %w", err)
+				}
+			}
 		case subscriptionplan.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
@@ -242,6 +255,9 @@ func (_m *SubscriptionPlan) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("headcount_limit=")
 	builder.WriteString(fmt.Sprintf("%v", _m.HeadcountLimit))
+	builder.WriteString(", ")
+	builder.WriteString("model_tags=")
+	builder.WriteString(fmt.Sprintf("%v", _m.ModelTags))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))

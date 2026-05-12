@@ -61,6 +61,10 @@ func (SubscriptionPlan) Fields() []ent.Field {
 		field.Int("headcount_limit").
 			Default(0).
 			Comment("Maximum number of active subscriptions allowed for this plan (0 = unlimited)"),
+		field.Strings("model_tags").
+			Optional().
+			SchemaType(map[string]string{dialect.Postgres: "text[]"}).
+			Comment("套餐展示的模型标签，例如 [\"Claude\", \"Gemini\", \"Imagen\"]"),
 		field.Time("created_at").
 			Immutable().
 			Default(time.Now).

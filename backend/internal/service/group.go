@@ -15,6 +15,7 @@ type Group struct {
 	Description    string
 	Platform       string
 	RateMultiplier float64
+	ExtraRateMultiplier float64
 	IsExclusive    bool
 	Status         string
 	Hydrated       bool // indicates the group was loaded from a trusted repository source

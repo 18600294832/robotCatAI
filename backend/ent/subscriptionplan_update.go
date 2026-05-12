@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 	"github.com/Wei-Shaw/sub2api/ent/predicate"
 	"github.com/Wei-Shaw/sub2api/ent/subscriptionplan"
@@ -244,6 +245,24 @@ func (_u *SubscriptionPlanUpdate) AddHeadcountLimit(v int) *SubscriptionPlanUpda
 	return _u
 }
 
+// SetModelTags sets the "model_tags" field.
+func (_u *SubscriptionPlanUpdate) SetModelTags(v []string) *SubscriptionPlanUpdate {
+	_u.mutation.SetModelTags(v)
+	return _u
+}
+
+// AppendModelTags appends value to the "model_tags" field.
+func (_u *SubscriptionPlanUpdate) AppendModelTags(v []string) *SubscriptionPlanUpdate {
+	_u.mutation.AppendModelTags(v)
+	return _u
+}
+
+// ClearModelTags clears the value of the "model_tags" field.
+func (_u *SubscriptionPlanUpdate) ClearModelTags() *SubscriptionPlanUpdate {
+	_u.mutation.ClearModelTags()
+	return _u
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (_u *SubscriptionPlanUpdate) SetUpdatedAt(v time.Time) *SubscriptionPlanUpdate {
 	_u.mutation.SetUpdatedAt(v)
@@ -379,6 +398,17 @@ func (_u *SubscriptionPlanUpdate) sqlSave(ctx context.Context) (_node int, err e
 	}
 	if value, ok := _u.mutation.AddedHeadcountLimit(); ok {
 		_spec.AddField(subscriptionplan.FieldHeadcountLimit, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.ModelTags(); ok {
+		_spec.SetField(subscriptionplan.FieldModelTags, field.TypeJSON, value)
+	}
+	if value, ok := _u.mutation.AppendedModelTags(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, subscriptionplan.FieldModelTags, value)
+		})
+	}
+	if _u.mutation.ModelTagsCleared() {
+		_spec.ClearField(subscriptionplan.FieldModelTags, field.TypeJSON)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(subscriptionplan.FieldUpdatedAt, field.TypeTime, value)
@@ -619,6 +649,24 @@ func (_u *SubscriptionPlanUpdateOne) AddHeadcountLimit(v int) *SubscriptionPlanU
 	return _u
 }
 
+// SetModelTags sets the "model_tags" field.
+func (_u *SubscriptionPlanUpdateOne) SetModelTags(v []string) *SubscriptionPlanUpdateOne {
+	_u.mutation.SetModelTags(v)
+	return _u
+}
+
+// AppendModelTags appends value to the "model_tags" field.
+func (_u *SubscriptionPlanUpdateOne) AppendModelTags(v []string) *SubscriptionPlanUpdateOne {
+	_u.mutation.AppendModelTags(v)
+	return _u
+}
+
+// ClearModelTags clears the value of the "model_tags" field.
+func (_u *SubscriptionPlanUpdateOne) ClearModelTags() *SubscriptionPlanUpdateOne {
+	_u.mutation.ClearModelTags()
+	return _u
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (_u *SubscriptionPlanUpdateOne) SetUpdatedAt(v time.Time) *SubscriptionPlanUpdateOne {
 	_u.mutation.SetUpdatedAt(v)
@@ -784,6 +832,17 @@ func (_u *SubscriptionPlanUpdateOne) sqlSave(ctx context.Context) (_node *Subscr
 	}
 	if value, ok := _u.mutation.AddedHeadcountLimit(); ok {
 		_spec.AddField(subscriptionplan.FieldHeadcountLimit, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.ModelTags(); ok {
+		_spec.SetField(subscriptionplan.FieldModelTags, field.TypeJSON, value)
+	}
+	if value, ok := _u.mutation.AppendedModelTags(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, subscriptionplan.FieldModelTags, value)
+		})
+	}
+	if _u.mutation.ModelTagsCleared() {
+		_spec.ClearField(subscriptionplan.FieldModelTags, field.TypeJSON)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(subscriptionplan.FieldUpdatedAt, field.TypeTime, value)

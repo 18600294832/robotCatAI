@@ -136,6 +136,9 @@ func (s *PaymentConfigService) CreatePlan(ctx context.Context, req CreatePlanReq
 	if req.OriginalPrice != nil {
 		b.SetOriginalPrice(*req.OriginalPrice)
 	}
+	if req.ModelTags != nil && len(req.ModelTags) > 0 {
+		b.SetModelTags(req.ModelTags)
+	}
 	return b.Save(ctx)
 }
 
@@ -185,6 +188,9 @@ func (s *PaymentConfigService) UpdatePlan(ctx context.Context, id int64, req Upd
 			return nil, infraerrors.BadRequest("INVALID_HEADCOUNT_LIMIT", "headcount_limit must be >= 0")
 		}
 		u.SetHeadcountLimit(*req.HeadcountLimit)
+	}
+	if req.ModelTags != nil {
+		u.SetModelTags(*req.ModelTags)
 	}
 	return u.Save(ctx)
 }

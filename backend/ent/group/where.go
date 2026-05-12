@@ -85,6 +85,11 @@ func RateMultiplier(v float64) predicate.Group {
 	return predicate.Group(sql.FieldEQ(FieldRateMultiplier, v))
 }
 
+// ExtraRateMultiplier applies equality check predicate on the "extra_rate_multiplier" field. It's identical to ExtraRateMultiplierEQ.
+func ExtraRateMultiplier(v float64) predicate.Group {
+	return predicate.Group(sql.FieldEQ(FieldExtraRateMultiplier, v))
+}
+
 // IsExclusive applies equality check predicate on the "is_exclusive" field. It's identical to IsExclusiveEQ.
 func IsExclusive(v bool) predicate.Group {
 	return predicate.Group(sql.FieldEQ(FieldIsExclusive, v))
@@ -518,6 +523,46 @@ func RateMultiplierLT(v float64) predicate.Group {
 // RateMultiplierLTE applies the LTE predicate on the "rate_multiplier" field.
 func RateMultiplierLTE(v float64) predicate.Group {
 	return predicate.Group(sql.FieldLTE(FieldRateMultiplier, v))
+}
+
+// ExtraRateMultiplierEQ applies the EQ predicate on the "extra_rate_multiplier" field.
+func ExtraRateMultiplierEQ(v float64) predicate.Group {
+	return predicate.Group(sql.FieldEQ(FieldExtraRateMultiplier, v))
+}
+
+// ExtraRateMultiplierNEQ applies the NEQ predicate on the "extra_rate_multiplier" field.
+func ExtraRateMultiplierNEQ(v float64) predicate.Group {
+	return predicate.Group(sql.FieldNEQ(FieldExtraRateMultiplier, v))
+}
+
+// ExtraRateMultiplierIn applies the In predicate on the "extra_rate_multiplier" field.
+func ExtraRateMultiplierIn(vs ...float64) predicate.Group {
+	return predicate.Group(sql.FieldIn(FieldExtraRateMultiplier, vs...))
+}
+
+// ExtraRateMultiplierNotIn applies the NotIn predicate on the "extra_rate_multiplier" field.
+func ExtraRateMultiplierNotIn(vs ...float64) predicate.Group {
+	return predicate.Group(sql.FieldNotIn(FieldExtraRateMultiplier, vs...))
+}
+
+// ExtraRateMultiplierGT applies the GT predicate on the "extra_rate_multiplier" field.
+func ExtraRateMultiplierGT(v float64) predicate.Group {
+	return predicate.Group(sql.FieldGT(FieldExtraRateMultiplier, v))
+}
+
+// ExtraRateMultiplierGTE applies the GTE predicate on the "extra_rate_multiplier" field.
+func ExtraRateMultiplierGTE(v float64) predicate.Group {
+	return predicate.Group(sql.FieldGTE(FieldExtraRateMultiplier, v))
+}
+
+// ExtraRateMultiplierLT applies the LT predicate on the "extra_rate_multiplier" field.
+func ExtraRateMultiplierLT(v float64) predicate.Group {
+	return predicate.Group(sql.FieldLT(FieldExtraRateMultiplier, v))
+}
+
+// ExtraRateMultiplierLTE applies the LTE predicate on the "extra_rate_multiplier" field.
+func ExtraRateMultiplierLTE(v float64) predicate.Group {
+	return predicate.Group(sql.FieldLTE(FieldExtraRateMultiplier, v))
 }
 
 // IsExclusiveEQ applies the EQ predicate on the "is_exclusive" field.

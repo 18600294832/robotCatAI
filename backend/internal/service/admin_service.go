@@ -184,6 +184,7 @@ type CreateGroupInput struct {
 	Description      string
 	Platform         string
 	RateMultiplier   float64
+	ExtraRateMultiplier float64
 	IsExclusive      bool
 	SubscriptionType string   // standard/subscription
 	DailyLimitUSD    *float64 // 日限额 (USD)
@@ -223,6 +224,7 @@ type UpdateGroupInput struct {
 	Description      string
 	Platform         string
 	RateMultiplier   *float64 // 使用指针以支持设置为0
+	ExtraRateMultiplier *float64
 	IsExclusive      *bool
 	Status           string
 	SubscriptionType string   // standard/subscription
@@ -1665,6 +1667,7 @@ func (s *adminServiceImpl) CreateGroup(ctx context.Context, input *CreateGroupIn
 		Description:                     input.Description,
 		Platform:                        platform,
 		RateMultiplier:                  input.RateMultiplier,
+		ExtraRateMultiplier:             input.ExtraRateMultiplier,
 		IsExclusive:                     input.IsExclusive,
 		Status:                          StatusActive,
 		SubscriptionType:                subscriptionType,
@@ -1832,6 +1835,12 @@ func (s *adminServiceImpl) UpdateGroup(ctx context.Context, id int64, input *Upd
 			return nil, errors.New("rate_multiplier must be > 0")
 		}
 		group.RateMultiplier = *input.RateMultiplier
+	}
+	if input.ExtraRateMultiplier != nil {
+		if *input.ExtraRateMultiplier < 0 {
+			return nil, errors.New("extra_rate_multiplier must be >= 0")
+		}
+		group.ExtraRateMultiplier = *input.ExtraRateMultiplier
 	}
 	if input.IsExclusive != nil {
 		group.IsExclusive = *input.IsExclusive
